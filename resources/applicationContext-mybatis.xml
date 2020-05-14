@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        https://www.springframework.org/schema/tx/spring-tx.xsd">
+     <!-- 1.扫描有注解的类 让sping进行管理 -->
+     <context:component-scan base-package="com.dragon">
+         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+     </context:component-scan>
+     <!-- 2.加载配置文件 -->
+     <context:property-placeholder location="classpath:datasource.properties"/>
+     <!-- 3.配置数据源 -->
+     <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+         <property name="driverClassName" value="${driver}"/>
+         <property name="url" value="${url}"/>
+         <property name="username" value="${user}"/>
+         <property name="password" value="${password}"/>
+         <property name="initialSize" value="${initialSize}"/>
+         <property name="maxTotal" value="${maxActive}"/>
+         <property name="maxIdle" value="${maxIdle}"/>
+         <property name="minIdle" value="${minIdle}"/>
+         <property name="maxWaitMillis" value="${maxWait}"/>
+         <!-- sql心跳包 -->
+         <property name="testWhileIdle" value="true"/>
+    	 <property name="testOnBorrow" value="false"/>
+    	 <property name="testOnReturn" value="false"/>
+    	 <property name="validationQuery" value="select 1"/>
+    	 <property name="timeBetweenEvictionRunsMillis" value="6000"/>
+    	 <property name="numTestsPerEvictionRun" value="${maxActive}"/>
+     </bean>
+     <!-- 4.配置sqlsessionfactory -->
+     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+         <property name="dataSource" ref="dataSource"/>
+         <property name="typeAliasesPackage" value="com.dragon.pojo"/>
+         <property name="mapperLocations" value="classpath:mapper/*/*.xml"/>
+     </bean>
+     <!-- 5.扫描所有的dao -->
+     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    	<!-- 配置操作接口的包全路径名 -->
+    	<property name="basePackage" value="com.dragon.dao.*"/>
+    	<!-- 指定SqlSessionFactoryBeanName -->
+    	<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+    <!-- 6、配置事务增强类 -->
+    <bean id="transactionManager"
+     class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	<property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!-- 7、配置事务增强方式 -->
+    <!-- 基于注解方式的事务增强 -->
+    <!-- <tx:annotation-driven/> -->
+    <!-- 基于xml配置的事务增强 -->
+	<!-- 为哪些方法添加事务增强的功能 -->
+	<tx:advice id="txAdvice">
+		<tx:attributes>
+			<!-- 设置增强的方法 -->
+			<tx:method name="*" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice>    
+    <!-- 8、配置AOP切面 -->
+    <aop:config>
+    	<!-- 定义切入点 -->
+    	<aop:pointcut expression="execution(* com.dragon..*(..))" id="myPointcut"/>
+    	<!-- 将事务增加和aop进行融合 -->
+    	<aop:advisor advice-ref="txAdvice" pointcut-ref="myPointcut"/>
+    </aop:config> 
+</beans>        

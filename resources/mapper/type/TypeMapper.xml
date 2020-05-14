@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dragon.dao.type.TypeDao">
+   <!-- 查询所有 -->
+   <select id="getList" resultType="Type">
+     select * from erp_type
+   </select>
+   <!-- 通过id查询数据 -->
+   <select id="FindByTid" resultType="Type">
+     select * from erp_type
+     <where>
+       <if test="tid !=0">
+        and tid=#{tid}
+       </if>
+     </where>
+   </select>
+   <!-- 通过id删除数据 -->
+   <delete id="delType">
+      DELETE FROM erp_type 
+      <where>
+	      <if test="tid !=0">
+	        and tid=#{tid}
+	      </if>
+      </where>
+   </delete>
+   <!-- 增加数据 -->
+   <insert id="addType">
+     INSERT INTO erp_type(tname,notes) VALUES(#{tname},#{notes})
+   </insert>
+   <!-- 修改数据 -->
+   <update id="updateType">
+     UPDATE erp_type SET tname=#{tname},`describe`=#{describe},notes=#{notes} where tid=#{tid}
+   </update>
+</mapper>
