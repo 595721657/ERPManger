@@ -40,5 +40,11 @@ public class UserController {
 			  return "login";
 		  }
 	}
+	  //ÍË³öµÇÂ¼
+	  @RequestMapping(value = "/doLogin",method = RequestMethod.GET)
+	  public String doLogin(HttpSession session) {
+		  session.invalidate();
+		  return "login";
+	}
 
 }

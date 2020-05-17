@@ -24,11 +24,11 @@
       </where>
    </delete>
    <!-- 增加数据 -->
-   <insert id="addType">
-     INSERT INTO erp_type(tname,notes) VALUES(#{tname},#{notes})
+   <insert id="addType" parameterType="type">
+     INSERT INTO erp_type(tname,notes,createby,createdate) VALUES(#{tname},#{notes},#{createby},#{createdate})
    </insert>
    <!-- 修改数据 -->
-   <update id="updateType">
-     UPDATE erp_type SET tname=#{tname},`describe`=#{describe},notes=#{notes} where tid=#{tid}
+   <update id="updateType" parameterType="type">
+     UPDATE erp_type SET tname=#{tname},`describe`=#{describe},notes=#{notes},modifyby=#{modifyby},modifydate=#{modifydate} where tid=#{tid}
    </update>
 </mapper>

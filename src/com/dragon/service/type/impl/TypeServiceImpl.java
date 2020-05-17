@@ -32,8 +32,8 @@ public class TypeServiceImpl implements TypeService {
 	}
 
 	@Override
-	public boolean addType(String tname, String notes) {
-		if(typeDao.addType(tname, notes)>0) {
+	public boolean addType(Type type) {
+		if(typeDao.addType(type)>0) {
 			return true;
 		}else {
 		    return false;

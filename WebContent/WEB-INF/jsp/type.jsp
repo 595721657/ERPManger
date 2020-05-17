@@ -13,6 +13,7 @@
 		<link rel="stylesheet" href="${pageContext.request.contextPath }/static/css/font-awesome.min.css" />
 		<link rel="stylesheet" href="${pageContext.request.contextPath }/static/css/amazeui.min.css" />
 		<link rel="stylesheet" href="${pageContext.request.contextPath }/static/css/admin.css" />
+		<link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath }/static/css/bootstrap.css">
 		<style>
 		
 		</style>
@@ -53,7 +54,7 @@
 												<td>${t.tname }</td>
 												<td>${t.describe }</td>
 												<td>${t.notes }</td>
-												<td class="edit"><button onclick="btn_edit(${t.tid })"><i class="icon-edit bigger-120"></i>编辑</button></td>
+												<td class="edit"><button onclick="btn_edit(${t.tid })" data-toggle="modal" data-target="#myModal"><i class="icon-edit bigger-120"></i>编辑</button></td>
 												<td class="delete"><button onclick="btn_delete(${t.tid })"><i class="icon-trash bigger-120"></i>删除</button></td>
 											</tr>
 										  </c:forEach>
@@ -119,12 +120,71 @@
 				<!--tab end-->
 
 			</div>
-
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+ 
+      <!-- 模态框头部 -->
+      <div class="modal-header">
+        <h4 class="modal-title">编辑类别</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+ 
+      <!-- 模态框主体 -->
+      <div class="modal-body">
+        		<form class="am-form am-form-horizontal">
+						    <input name="tid" value="" type="hidden" id="user_tid"/>
+							<div class="am-form-group">
+								<label for="user-name" class="am-u-sm-3 am-form-label">
+									分类名称</label>
+								<div class="am-u-sm-9">
+									<input type="text" id="user_name" required
+										placeholder="分类名称" name="tname" value="">
+										<small>10字以内...</small>
+								</div>
+							</div>
+							<div class="am-form-group">
+								<label for="user-intro" class="am-u-sm-3 am-form-label">
+									描述</label>
+								<div class="am-u-sm-9">
+									<textarea class="" rows="5" id="user_desc" name="remark"
+										placeholder="输入描述" ></textarea>
+									<small>250字以内...</small>
+								</div>
+							</div>
+							<div class="am-form-group">
+								<label for="user-intro" class="am-u-sm-3 am-form-label">
+									备注</label>
+								<div class="am-u-sm-9">
+									<textarea class="" rows="5" id="user_intro" name="remark"
+										placeholder="输入备注"></textarea>
+									<small>250字以内...</small>
+								</div>
+							</div>
+							<div class="am-form-group">
+								<div class="am-u-sm-9 am-u-sm-push-3">
+								    <button onclick="btn_update()"><i class="icon-trash bigger-120"></i>修改分类</button>
+									<!-- <input type="button" class="am-btn am-btn-success" value="添加分类" /> -->
+								</div>
+							</div>
+						</form>
+      </div>
+ 
+      <!-- 模态框底部 -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+      </div>
+ 
+    </div>
+  </div>
+</div>
 			
 			 <script src="${pageContext.request.contextPath }/static/js/jquery.min.js" type="text/javascript"></script>
              <script src="${pageContext.request.contextPath }/static/js/plugs/Jqueryplugs.js" type="text/javascript"></script>
              <script src="${pageContext.request.contextPath }/static/js/_layout.js" type="text/javascript"></script>
              <script src="${pageContext.request.contextPath }/static/js/plugs/jquery.SuperSlide.source.js" type="text/javascript"></script>
+			 <!-- 引用bootstrap -->
+             <script type="text/javascript" src="${pageContext.request.contextPath }/static/js/bootstrap.js"></script>
 			<script>
 				var num = 1;
 				$(function() {
@@ -137,8 +197,6 @@
 				var btn_save = function() {
 					var name = $("#user-name").val();
 					var desc = $("#user-intro").val();
-					alert(name);
-					alert(desc);
 					$.ajax({
 						type: "post",
 						url: "${pageContext.request.contextPath }/type/AddType",
@@ -148,7 +206,7 @@
                              if(data.isok == "true"){
                             	 location.reload();
                              }else{
-                            	 location.reload();
+                            	 alert("增加失败");
                              }
 						},error:function(e){
 							alert("增加失败");
@@ -156,15 +214,6 @@
 					});
 				}
                 //编辑
-				/* var btn_edit = function(id) {
-					$.jq_Panel({
-						url: "${pageContext.request.contextPath }/type/FindbyTid?id=" + id,
-						title: "编辑分类",
-						dialogModal: true,
-						iframeWidth: 500,
-						iframeHeight: 400
-					});
-				} */
 				var btn_edit = function(id) {
 					/* $.jq_Panel({
 						url: "/RawMaterialsType/EditRawMaterialsType?id=" + id,
@@ -173,7 +222,42 @@
 						iframeWidth: 500,
 						iframeHeight: 400
 					}); */
-					window.open("${pageContext.request.contextPath }/type/FindbyTid?tid="+id,"newwindow","width=500,height=300,status='no'");
+					/* window.open("${pageContext.request.contextPath }/type/FindbyTid?tid="+id,"newwindow","width=500,height=300,status='no'"); */
+					$.ajax({
+						url:"${pageContext.request.contextPath }/type/FindbyTid",
+						type: "GET",
+						data: { tid: id },
+						dataType:"json",
+						success: function(data) {
+							$("#user_name").val(data.tname);
+							$("#user_intro").val(data.notes);
+							$("#user_desc").val(data.describe);
+							$("#user_tid").val(data.tid);
+						}
+					});
+				}
+                //修改类别
+				var btn_update = function() {
+					var name = $("#user_name").val();
+					var notes = $("#user_intro").val();
+					var desc = $("#user_desc").val();
+					var tid= $("#user_tid").val();
+					$.ajax({
+						type: "post",
+						url: "${pageContext.request.contextPath }/type/UpdateType",
+						data: { tid: tid,tname: name,describe: desc,notes: notes},
+						dataType:"json",
+						success: function(data) {
+				             if(data.isok == "true"){
+				            	 $("#myModal").hide();
+				            	 location.reload();
+				             }else{
+				            	 location.reload();
+				             }
+						},error:function(e){
+							alert("修改失败");
+						}
+					});
 				}
 				//删除
 				var btn_delete = function(id) {

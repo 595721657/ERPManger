@@ -9,30 +9,32 @@
   	<param-name>contextConfigLocation</param-name>
   	<param-value>classpath:applicationContext-*.xml</param-value>
   </context-param>
-  <!-- 2、添加一个监听器用于对spring配置文件的读取 -->
+    <!-- 2、启动父容器 listener（监听器）-->
   <listener>
+  	<!-- 配置一个启动父容器的类 -->
   	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
-  <!-- 3、配置一个过滤器，解决获得数据的出现中文乱码 -->
+  	<!-- 解决增加时出现的中文乱码 -->
   <filter>
+	  <!-- 拦截器的名称 -->
   	<filter-name>encodingFilter</filter-name>
+  	<!-- 拦截器类的全路径名 -->
   	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-  	<!-- 默认的编码格式 -->
+  	<!-- 初始化参数值 -->
   	<init-param>
-  		<param-name>encoding</param-name>
-  		<param-value>UTF-8</param-value>
+  			<param-name>encoding</param-name>
+  			<param-value>UTF-8</param-value>
   	</init-param>
-  	<!-- 让请求的编码生效 -->
   	<init-param>
-  		<param-name>forceRequestEncoding</param-name>
-  		<param-value>true</param-value>
+  			<param-name>forceRequestEncoding</param-name>
+  			<param-value>true</param-value>
   	</init-param>
-  	<!-- 让响应的编码生效 -->
   	<init-param>
-  		<param-name>forceResponseEncoding</param-name>
-  		<param-value>true</param-value>
+  			<param-name>forceResponseEncoding</param-name>
+  			<param-value>true</param-value>
   	</init-param>
   </filter>
+  <!-- 配置过滤器映射 -->
   <filter-mapping>
   	<filter-name>encodingFilter</filter-name>
   	<url-pattern>/*</url-pattern>

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>    
 <!DOCTYPE html>
 <html>
 	<head>
@@ -118,7 +119,7 @@
 				width: 160px;
 				margin-left: -20px;
 				color: Black;
-				display: none;
+				display: block;
 			}
 			
 			.headerlitools_ulinfo>li {
@@ -216,12 +217,11 @@
 
 					<li class="headerlitools_info headerlitools" style="background-color: #075597">
 						<div class="headeruserface" style="text-align: center;"><i class="icon-user" style="color: black;font-size: 19px;"></i></div>
-						管理员<i style="margin-left: 8px;" class="icon-caret-down"></i>
+						${douser.account }<i style="margin-left: 8px;" class="icon-caret-down"></i>
 						<ul class="headerlitools_ulinfo">
-
 							<li style="border-top: 1px solid #E4ECF3;">
 								<i class="icon-off" style="margin-right: 10px;"></i>
-								<a style="color: black; text-decoration: none;">退出</a>
+								<a href="${pageContext.request.contextPath }/user/doLogin"  style="color: black; text-decoration: none;">退出</a>
 							</li>
 						</ul>
 					</li>
@@ -231,30 +231,48 @@
 		<div class="dvcontent">
 
 			<ul class="ulleftmenu" style="border-right: 1px solid #ddd;">
-
 				<li class="limenuitem">
 					<i class="icon-cog menuicon"></i>系统菜单<b class="arrow icon-angle-down arrow-down"></b>
-					<ul class="ulleftsubitems">
-						<a href="${pageContext.request.contextPath }/type/Type" target="right">
-							<li>分类管理</li>
-						</a>
-						<a href="${pageContext.request.contextPath }/test/Inventory.html" target="right">
-							<li>库存管理</li>
-						</a>
-						<a href="inbound.html" target="right">
-							<li>入库管理</li>
-						</a>
-						<a href="warning.html" target="right">
-							<li>预警信息设置</li>
-						</a>
-						<a href="outBoud.html" target="right">
-							<li>出库管理</li>
-						</a>
-						<a href="user.html" target="right">
-							<li>用户管理</li>
-						</a>
-						<a href="updatePwd.html" target="right"><li >修改密码</li></a>
-					</ul>
+					<c:if test="${douser.userrole==0 }" var="notPass">
+						<ul class="ulleftsubitems">
+							<a href="${pageContext.request.contextPath }/type/Type" target="right">
+								<li>分类管理</li>
+							</a>
+							<a href="${pageContext.request.contextPath }/test/Inventory.html" target="right">
+								<li>库存管理</li>
+							</a>
+							<a href="inbound.html" target="right">
+								<li>入库管理</li>
+							</a>
+							<a href="warning.html" target="right">
+								<li>预警信息设置</li>
+							</a>
+							<a href="outBoud.html" target="right">
+								<li>出库管理</li>
+							</a>
+							<a href="user.html" target="right">
+								<li>用户管理</li>
+							</a>
+							<a href="updatePwd.html" target="right"><li >修改密码</li></a>
+						</ul>
+					</c:if>
+					<c:if test="${! notPass}">
+						 <ul class="ulleftsubitems">
+								<a href="${pageContext.request.contextPath }/type/Type" target="right">
+									<li>分类管理</li>
+								</a>
+								<a href="${pageContext.request.contextPath }/test/Inventory.html" target="right">
+									<li>库存管理</li>
+								</a>
+								<a href="inbound.html" target="right">
+									<li>入库管理</li>
+								</a>
+								<a href="outBoud.html" target="right">
+								<li>出库管理</li>
+							    </a>
+								<a href="updatePwd.html" target="right"><li >修改密码</li></a>
+						 </ul>
+					</c:if>
 				</li>
 			</ul>
 			<div style="position: absolute; left: 191px; right: 20px; ">

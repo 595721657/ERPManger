@@ -32,7 +32,7 @@ public interface TypeDao {
        * @param notes 类别备注
        * @return 增加的结果
        */
-      int addType(@Param("tname") String tname,@Param("notes") String notes);
+      int addType(Type type);
       /**
        * 修改类别
        * @param type 修改的数据

@@ -12,7 +12,7 @@ public interface TypeService {
 	//通过编号查询数据
 	Type FindByTid(int tid);
 	//增加
-	boolean addType(String tname,String notes);
+	boolean addType(Type type);
 	//修改
 	boolean updateType(Type type); 
 }
